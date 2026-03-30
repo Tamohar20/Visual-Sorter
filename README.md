@@ -91,12 +91,6 @@ See the **[Deployment Guide](#-deployment--github-pages)** section below for ste
 
 ---
 
-## 🖼️ Screenshots
-
-> *(Add screenshots of the dark and light modes here after hosting)*
-
----
-
 ## 👨‍💻 Authors
 
 Made with ❤️ by **Swapnil Jaiswal** & **Tamohar Das**
