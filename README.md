@@ -40,3 +40,16 @@ This project helps in understanding how different sorting algorithms work throug
 ---
 
 ## 📂 Project Structure
+Visual-Sorter/
+│── index.html
+│── styles.css
+│── script.js
+│── README.md
+
+---
+
+## ▶️ How to Run
+
+1. Clone the repository:
+```bash
+git clone https://github.com/YOUR_USERNAME/Visual-Sorter.git
