@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Visual Sorter – Interactive Sorting Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <div class="logo-text">Visual<span>Sorter</span></div>
+    </div>
+    <div class="header-controls">
+      <button class="dark-toggle" id="themeToggle" onclick="toggleTheme()">☀️ Light Mode</button>
+    </div>
+  </header>
+
+  <div class="main-container">
+
+    <div class="left-col">
+
+      <div class="card">
+        <div class="card-title">Array Input</div>
+        <div class="input-row">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Custom Array (comma-separated)</label>
+            <input class="input-field" id="customArray" type="text" placeholder="e.g. 64, 25, 12, 22, 11, 45, 3, 90"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">&nbsp;</label>
+            <button class="btn btn-primary" id="applyBtn" onclick="applyCustomArray()">Apply</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label">&nbsp;</label>
+            <button class="btn btn-outline" id="generateBtn" onclick="generateRandom()">🎲 Random</button>
+          </div>
+        </div>
+        <div class="size-row">
+          <span class="size-label">Array Size:</span>
+          <input type="range" id="sizeRange" min="5" max="80" value="30" oninput="updateSizeDisplay(this.value)"/>
+          <span class="size-val" id="sizeDisplay">30</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Select Algorithm</div>
+        <div class="algo-grid" id="algoGrid">
+          <button class="algo-btn active" data-algo="bubble"    onclick="selectAlgo('bubble')">Bubble Sort</button>
+          <button class="algo-btn"        data-algo="selection" onclick="selectAlgo('selection')">Selection Sort</button>
+          <button class="algo-btn"        data-algo="insertion" onclick="selectAlgo('insertion')">Insertion Sort</button>
+          <button class="algo-btn"        data-algo="merge"     onclick="selectAlgo('merge')">Merge Sort</button>
+          <button class="algo-btn"        data-algo="quick"     onclick="selectAlgo('quick')">Quick Sort</button>
+          <button class="algo-btn"        data-algo="counting"  onclick="selectAlgo('counting')">Counting Sort</button>
+        </div>
+      </div>
+
+      <div class="viz-wrapper card" style="padding:0;">
+        <div class="viz-header">
+          <div class="viz-info">
+            <div class="viz-stat">Comparisons: <strong id="compCount">0</strong></div>
+            <div class="viz-stat">Swaps: <strong id="swapCount">0</strong></div>
+            <div class="viz-stat">Array Size: <strong id="arrSizeDisplay">30</strong></div>
+          </div>
+          <div class="viz-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--bar-default)"></div>Unsorted</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--bar-compare)"></div>Comparing</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--bar-swap)"></div>Swapping</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--bar-sorted)"></div>Sorted</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--bar-pivot)"></div>Pivot</div>
+          </div>
+        </div>
+
+        <div id="bar-container"></div>
+
+        <div class="controls-bar">
+          <button class="btn btn-success" id="startBtn"  onclick="startSort()">▶ Start</button>
+          <button class="btn btn-ghost"   id="pauseBtn"  onclick="pauseResume()" disabled>⏸ Pause</button>
+          <button class="btn btn-outline" id="stepBtn"   onclick="stepMode()">⏭ Step</button>
+          <button class="btn btn-danger"  id="resetBtn"  onclick="resetAll()">↺ Reset</button>
+          <div class="speed-group">
+            <span class="speed-label">Speed:</span>
+            <button class="speed-btn active "data-speed="slow"   onclick="setSpeed('slow')">Slow</button>
+            <button class="speed-btn"        data-speed="medium" onclick="setSpeed('medium')">Med</button>
+            <button class="speed-btn"        data-speed="fast"   onclick="setSpeed('fast')">Fast</button>
+            <button class="speed-btn"        data-speed="turbo"  onclick="setSpeed('turbo')">Turbo</button>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div class="status-dot" id="statusDot"></div>
+          <span class="status-text" id="statusText">Ready — select algorithm and press Start</span>
+        </div>
+      </div>
+
+      <div class="step-info" id="stepInfo">Step-by-step mode: click ⏭ Step to advance one step at a time.</div>
+
+      <div class="card">
+        <div class="card-title">
+          Algorithm Details —
+          <span id="algoTitle" class="algo-title-badge">Bubble Sort</span>
+        </div>
+        <div class="complexity-grid">
+          <div class="complexity-item">
+            <div class="complexity-label">Best Case</div>
+            <div class="complexity-value best" id="cBest">O(n)</div>
+          </div>
+          <div class="complexity-item">
+            <div class="complexity-label">Average Case</div>
+            <div class="complexity-value avg" id="cAvg">O(n²)</div>
+          </div>
+          <div class="complexity-item">
+            <div class="complexity-label">Worst Case</div>
+            <div class="complexity-value worst" id="cWorst">O(n²)</div>
+          </div>
+          <div class="complexity-item">
+            <div class="complexity-label">Space</div>
+            <div class="complexity-value space" id="cSpace">O(1)</div>
+          </div>
+        </div>
+        <div class="algo-desc" id="algoDesc">
+          Bubble Sort repeatedly steps through the list, compares adjacent elements and swaps them if they're in the wrong order. The pass through the list is repeated until the list is sorted. Larger elements "bubble" to the top in each iteration.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Algorithm Code</div>
+        <div class="code-lang-tabs">
+          <button class="lang-tab active" data-lang="c"      onclick="setLang('c')">C</button>
+          <button class="lang-tab"        data-lang="cpp"    onclick="setLang('cpp')">C++</button>
+          <button class="lang-tab"        data-lang="java"   onclick="setLang('java')">Java</button>
+          <button class="lang-tab"        data-lang="python" onclick="setLang('python')">Python</button>
+        </div>
+        <div class="code-block" id="codeBlock"></div>
+      </div>
+
+    </div>
+
+    <div class="side-panel">
+
+      <div class="card">
+        <div class="card-title">Save / Load Array</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="saveArray()">💾 Save Current Array</button>
+          <button class="btn btn-ghost   btn-sm" onclick="loadArray()">📂 Load Saved Array</button>
+          <button class="btn btn-ghost   btn-sm" onclick="clearSaved()">🗑 Clear Saved</button>
+          <div id="savedInfo" class="saved-info-text"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Algo Performance (ms)</div>
+        <div class="compare-hint">Run each algo on current array to populate.</div>
+        <div class="compare-bars-wrap" id="compareChart"></div>
+        <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%;" onclick="runComparison()">
+          ⚡ Run All &amp; Compare
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Current Array</div>
+        <div id="arrayDisplay" class="array-display-text"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sort Log</div>
+        <div id="sortLog" class="sort-log">
+          <span class="log-placeholder">No sorts run yet.</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+<footer>
+  <p id="footer" >&copy; Created by Swapnil Jaiswal & Tamohar Das</p>
+</footer>
+</html>
