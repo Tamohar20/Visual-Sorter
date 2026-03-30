@@ -7,7 +7,7 @@
 ## 🚀 Live Demo
 
 <!-- Replace with your GitHub Pages URL after hosting -->
-🔗 **[https://&lt;tamohar20&gt;.github.io/visual-sorter](https://tamohar20.github.io/Visual-Sorter/)**
+🔗 **[https://tamohar20.github.io/visual-sorter](https://tamohar20.github.io/Visual-Sorter/)**
 
 ---
 
